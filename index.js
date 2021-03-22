@@ -1,139 +1,81 @@
+const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-// const extension = '.md';
-// const archive = './files';
+//Obtener el contenido de cada archivo
+
+const readContentMD = (archive) => {
+	let readArchive = fs.readFileSync(archive, 'utf-8')
+	console.log(chalk.magenta(readArchive))
+}
 
 
-//Accediendo a los archivos y leyendo su extensión (Casi buena) ---------
-// fs.readdir(archive, (err, files) => {
-// 	if (err){
-// 		return console.log('Error al imprimir los archivos')
-		
-// 	}	else if (path.extname(files) === extension){
-		
-// 		fs.readFile(files, 'utf8', (err, fileData) => {
-// 			if (err){
-// 				console.log('No se pudo leer el archivo')
+//Entrar a las carpetas y archivos
+
+// const enterFile = (archive) => {
+// 	fs.readdir(archive, (err, files) => {
+// 		if (err){
+// 			return console.log(chalk.red('Error al imprimir los archivos'));			
+// 		}	else {	
+// 			files.forEach((doc) => {
+// 				const docNamePath = path.extname(doc)				
+// 				if(docNamePath == '.md'){
+// 				const newPath = archive + '/' + doc	
+// 				read(newPath);	
+// 			} else if (docNamePath == ''){
+// 				console.log(chalk.yellow('Soy una carpeta', doc))
+// 				const newPath = archive + '/' + doc
+// 				// console.log(chalk.cyan('Estamos accediendo a la ruta:', newPath)) --> Nos muestra la ruta a  que accedemos
+// 				enterFile(newPath)
 // 			}
-// 			console.log(fileData)
-// 		})
-	
-// 	}
-
-// 	// let filtro = archive.filter(path.extname(files) === extension)
-// 	// console.log(filtro);
-	
-// })
-
-//Leer el archivo es una función, llamada en la función global -----------
-// fs.readdir(archive, (err, files) => {
-// 	if (err){
-// 		return console.log('Error al imprimir los archivos')
-		
-// 	}	else if (path.extname(files) === extension){		
-// 		read();	
-// 	}	
-// })
-
-// const read = () => {
-// 	fs.readFile(archive, 'utf8', (err, fileData) => {
-// 		if (err) {
-// 			return console.log('error al leer el archivo');
-// 		}
-// 			console.log(fileData)		
+// 			})
+// 			// console.log(files) --> Nos muestra todas las carpetas y archivos (sin importar la extensión) de la ruta
+// 		}		
 // 	})
 // }
 
-//Usando el método de Lau ---------
-
-// const ReadDoc = (doc) => {
-// 	// const mdDocFilter = doc.endsWith('.md');
-//   // if (mdDocFilter === true) {
-// 		const docContent = fs.readFileSync(doc, 'utf8');
-// 		console.log(docContent);
-// 	// } else {
-// 	// 	console.log(chalk.red.bold('no soy un archivo ".md"'));
-// 	// }
+// const contentArchive = (archive) => {
+// 	fs.readdir(archive, (err, files) => {
+// 		if(err){
+// 			console.log(chalk.red('Error al obtener los archivos de la carpeta'))
+// 		}else{
+// 			files.forEach((doc) => {
+// 				const newPath = archive + '/' + doc
+// 				read(newPath)
+// 				// console.log(newPath)
+// 				// read(newPath)
+// 			})			
+// 		}		
+// 	})
 // }
 
-const read = (archive) => {
-	fs.readFile(archive, 'utf8', (err, fileData) => {
-		if (err) {
-			return console.log('prueba');
-		}
-			console.log(fileData)		
-	})
-}
-
-//La buena-----
-
-const leerCarpeta = (archive) => {
+const contentArchive = (archive) => {
 	fs.readdir(archive, (err, files) => {
-		if (err){
-			return console.log('Error al imprimir los archivos')
-			
-		}	else {	
+		if(err){
+			console.log(chalk.red('Error al imprimir los archivos'))
+		}else{
+			console.log(chalk.magenta(files))
 			files.forEach((doc) => {
-				const extNamePath = path.extname(doc)				
-				if(extNamePath == '.md'){
-				read(doc);	
-			} else if (extNamePath == ''){
-				console.log('Soy una carpeta', doc)
 				const newPath = archive + '/' + doc
-				console.log('HOLA', newPath)
-				leerCarpeta(newPath)
-			}
+				extensionArchive(newPath)
 			})
-			console.log(files)
-		}	
-		
+		}
 	})
-}
-leerCarpeta('./files');
-
-
-
-
-
-
-// fs.readdir(archive, (err, files) => {
-// 	if (err){
-// 		return console.log('Error al imprimir los archivos')		
-// 	}
-
-// 	let filtro = files.endsWith(extension)
-// 	console.log(filtro);
 	
-// })
+}
 
 
+const extensionArchive = (archive) => {
+	const extNamePath = path.extname(archive);
+	if (extNamePath == '.md') {
+		console.log(chalk.yellow('Soy un archivo .md'));
+		readContentMD(archive)
+		// readDocMd(archive);
+	} else if (extNamePath == '') {
+		console.log(chalk.cyan('Soy una carpeta'));
+		contentArchive(archive)
+		// readDirectory(archive);
+	}
+}
 
-// -----------------------------------------
-
-
-// Leyendo el archivo
-// fs.readFile('README.md', 'utf8', (err, fileData) => {
-// 	if (err) {
-// 		return console.log('error al leer el archivo');
-// 	}
-// 	console.log(fileData);
-// });
-
-
-//Identificando la extensión del archivo
-// const extension = () => {
-// 	let ext = path.extname('README.md');
-// 	console.log(path.extname())
-//   console.log('HOLA', ext);
-// }
-
-
-// //Obteniendo el contenido de un archivo
-// fs.readdir('./files', (err, files) => {
-// 	if (err){
-// 		return console.log('Error al imprimir los archivos')
-// 	}
-// 	// extension();
-// 	console.log(files);
-// })
+extensionArchive('./files');

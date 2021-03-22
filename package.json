@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/AlejandraGarcia1/CDMX010-md-links/issues"
   },
-  "homepage": "https://github.com/AlejandraGarcia1/CDMX010-md-links#readme"
+  "homepage": "https://github.com/AlejandraGarcia1/CDMX010-md-links#readme",
+  "dependencies": {
+    "chalk": "^4.1.0"
+  }
 }
