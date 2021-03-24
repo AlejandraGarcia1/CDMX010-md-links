@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch');
 
 //Obtener el contenido de los archivos .md
 const readContentMD = (archive) => {
@@ -16,7 +17,7 @@ const contentArchive = (archive) => {
 			console.log(chalk.red('Error al imprimir los archivos'));
 		}else{
 			// console.log(chalk.green(files))
-			files.forEach((doc) => {
+			files.forEach((doc) => {				
 				const newPath = archive + '/' + doc
 				extensionArchive(newPath);
 			})
@@ -38,41 +39,61 @@ const extensionArchive = (archive) => {
 	}
 }
 
+// Verificar el estatus de los Links
+const getStatus = (links) => {
+	fetch(links)
+	.then(response => console.log(chalk.cyanBright(response)))
+	// .then(response => response.json())
+	// 	.then(json => console.log(chalk.cyanBright(json)))
+		// .then(response => console.log(chalk.cyanBright(response)));
+		
+}
+
+//Depurar Links
+const depurateLinks = (link) => {
+	const deleteItem = link.indexOf(')');
+	let finalLinks = "";
+
+	if(deleteItem !== -1){
+		finalLinks = link.slice(0,deleteItem)
+	}else{
+		finalLinks = link
+	}return finalLinks
+}
+
+
+
 //Obteniendo los links de los archivos
 const getLinks = (archive) => {
 	return new Promise((resolve, reject) => {
-		fs.readFile(archive, 'utf-8', (err, data) => {
+		fs.readFile(archive, 'utf-8', (err, data) => {			
 			if (err){
 				console.log(chalk.red('Error al obtener los links del archivo'))
 			}else{		
-						
-				const splitData = data.split('\n')							
-				// console.log(splitData)
+				const splitData = data.split('\n')
 
-				splitData.forEach(textLine =>{
+				splitData.forEach(textLine => {
 					const http = /http/.test(textLine)
 					const https = /https/.test(textLine)
-					
-					if(http == true || https == true){
-						//Nos trae cada línea que contiene una URL:
-						// let urlHttp = http
-						// console.log(urlHttp, textLine)
-						const url = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
-						const urlExtraidos = textLine.match(url);
-						const stringURL = urlExtraidos.toString()
-						const depurandoUrl = stringURL.indexOf(')')
-						// console.log(depurandoUrl, stringURL )
 
-						if(depurandoUrl !== -1){
-							const sinParentesis = stringURL.slice(0, depurandoUrl)
-							console.log(sinParentesis)
-							
-						}						
+					//Nos trae cada línea que contiene una URL:
+					if(http == true || https == true){
+						//Expresión regular de http o https
+						const regExpUrl = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+						const regExp = new RegExp(regExpUrl);
+						const urlMatch = textLine.match(regExp);
 						
+						if(urlMatch){
+							urlMatch.forEach(link => {
+								const finalLink = depurateLinks(link) 
+								console.log(chalk.green(finalLink))
+								getStatus(link)
+							})						
+						}
 					}
 				})
 			}			
-			// resolve(links);
+			resolve('¡Todo salió según lo planeado!');
 		})
 	})
 }

@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/AlejandraGarcia1/CDMX010-md-links#readme",
   "dependencies": {
-    "chalk": "^4.1.0"
+    "chalk": "^4.1.0",
+    "node-fetch": "^2.6.1"
   }
 }
