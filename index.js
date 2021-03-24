@@ -54,12 +54,21 @@ const getLinks = (archive) => {
 					const https = /https/.test(textLine)
 					
 					if(http == true || https == true){
-						//Nos trae cada línea que contiene una URL
+						//Nos trae cada línea que contiene una URL:
 						// let urlHttp = http
 						// console.log(urlHttp, textLine)
 						const url = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 						const urlExtraidos = textLine.match(url);
-						console.log(urlExtraidos)
+						const stringURL = urlExtraidos.toString()
+						const depurandoUrl = stringURL.indexOf(')')
+						// console.log(depurandoUrl, stringURL )
+
+						if(depurandoUrl !== -1){
+							const sinParentesis = stringURL.slice(0, depurandoUrl)
+							console.log(sinParentesis)
+							
+						}						
+						
 					}
 				})
 			}			
