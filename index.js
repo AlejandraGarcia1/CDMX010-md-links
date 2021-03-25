@@ -41,13 +41,38 @@ const extensionArchive = (archive) => {
 
 // Verificar el estatus de los Links
 const getStatus = (links) => {
+	
+	let totalStatus200 = []	
+
 	fetch(links)
-	.then(response => console.log(chalk.cyanBright(response)))
-	// .then(response => response.json())
-	// 	.then(json => console.log(chalk.cyanBright(json)))
-		// .then(response => console.log(chalk.cyanBright(response)));
-		
+	.then((response) => {		
+		// console.log(chalk.cyanBright(response.status, response.url))
+		if(response.status == 200){
+			let linksStatus200 = response.status
+			totalStatus200.push(linksStatus200)
+			console.log('Solicitud exitosa', linksStatus200, response.url)
+		}else if(response.status == 403 ){
+			let linksStatus403 = response.status
+			console.log('Sin autorización de acceso', linksStatus403, response.url)
+		}else if(response.status == 404){
+			let linksStatus404 = response.status
+			console.log('Servidor no encontrado', linksStatus404, response.url)
+		}else if(response.status == 500){
+			let linksStatus500 = response.status
+			console.log('Error del servidor', linksStatus500, response.url)
+		}else if(response.status == 503){
+			let linksStatus503 = response.status
+			console.log('Servidor sobresaturado', linksStatus503, response.url)
+		}
+	})
+	.catch((error) => {
+		console.log(chalk.red('Status error', error))
+	})
+	console.log(totalStatus200)
+	return(totalStatus200)
 }
+
+
 
 //Depurar Links
 const depurateLinks = (link) => {
@@ -87,9 +112,10 @@ const getLinks = (archive) => {
 							urlMatch.forEach(link => {
 								const finalLink = depurateLinks(link) 
 								console.log(chalk.green(finalLink))
-								getStatus(link)
+								getStatus(link)								
 							})						
 						}
+						
 					}
 				})
 			}			
