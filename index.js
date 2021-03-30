@@ -7,7 +7,24 @@ const fetch = require('node-fetch');
 const readContentMD = (archive) => {
 	let readArchive = fs.readFileSync(archive, 'utf-8');
 	console.log(chalk.magenta(readArchive));
+	// 2. Mandamos llamar la función de "getLinks"
 	getLinks(archive)
+		//Definimos una promesa, donde si obtenemos el arreglo de links entonces:
+		.then((links) => {
+			//vamos a mapear cada link del arreglo, y el resultado retornará otro arreglo según la definición de su estatus de "getStatus"
+			const promises = links.map(getStatus)
+			//Devuelve una promesa que termina correctamente cuando todas las promesas anteriores se ejecutarón con exito
+			return Promise.all(promises);
+		})
+		//Mostramos en consola el resultado general de la ejecuación de cada una de las promesas
+		//Esto nos muestra el número total de links en cada archivo .md
+		.then(result => console.log('Total de links encontrados en el archivo', result, result.length)) // [200, 200, 200, ...]
+		// .then()
+		
+		// .catch((error) => {
+		// 	console.log(chalk.red(error))
+		// })
+		
 }
 
 //Ingresar a los archivos y obtener su contenido
@@ -40,36 +57,29 @@ const extensionArchive = (archive) => {
 }
 
 // Verificar el estatus de los Links
-const getStatus = (links) => {
+const getStatus = (link) => {
+	//Aquí utilizamos retun, porque queremos que nos devuelva el link	
+	return fetch(link)	
 	
-	let totalStatus200 = []	
-
-	fetch(links)
-	.then((response) => {		
-		// console.log(chalk.cyanBright(response.status, response.url))
-		if(response.status == 200){
-			let linksStatus200 = response.status
-			totalStatus200.push(linksStatus200)
-			console.log('Solicitud exitosa', linksStatus200, response.url)
-		}else if(response.status == 403 ){
-			let linksStatus403 = response.status
-			console.log('Sin autorización de acceso', linksStatus403, response.url)
-		}else if(response.status == 404){
-			let linksStatus404 = response.status
-			console.log('Servidor no encontrado', linksStatus404, response.url)
-		}else if(response.status == 500){
-			let linksStatus500 = response.status
-			console.log('Error del servidor', linksStatus500, response.url)
-		}else if(response.status == 503){
-			let linksStatus503 = response.status
-			console.log('Servidor sobresaturado', linksStatus503, response.url)
+	.then((response) => {
+		
+		if(response.ok){			
+			// console.log(chalk.cyan(response.status, response.url))
+			return(response.status)
+		}else{			
+			// console.log(chalk.red(response.status, response.url))
+			return(response.status)
 		}
+
+		// console.log(chalk.cyanBright(response.status, response.url))
+		// console.log(response.status)
+		// return(response.status)
+		
 	})
 	.catch((error) => {
-		console.log(chalk.red('Status error', error))
-	})
-	console.log(totalStatus200)
-	return(totalStatus200)
+		// console.log(chalk.red('Status error', error))
+		return ('Error 500 del servidor', error.status)		
+	})	
 }
 
 
@@ -91,6 +101,8 @@ const depurateLinks = (link) => {
 //Obteniendo los links de los archivos
 const getLinks = (archive) => {
 	return new Promise((resolve, reject) => {
+		//1. Definimos el arreglo en donde entrará cada Link validado
+		const links = []
 		fs.readFile(archive, 'utf-8', (err, data) => {			
 			if (err){
 				console.log(chalk.red('Error al obtener los links del archivo'))
@@ -106,20 +118,23 @@ const getLinks = (archive) => {
 						//Expresión regular de http o https
 						const regExpUrl = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 						const regExp = new RegExp(regExpUrl);
-						const urlMatch = textLine.match(regExp);
+						const urlMatch = textLine.match(regExp);						
 						
 						if(urlMatch){
 							urlMatch.forEach(link => {
 								const finalLink = depurateLinks(link) 
 								console.log(chalk.green(finalLink))
-								getStatus(link)								
-							})						
-						}
-						
+								//Estamos empujando al arreglo "links" cada Link ya depurado
+								links.push(finalLink)
+								//getStatus(finalLink)								
+							})					
+						}	
 					}
 				})
-			}			
-			resolve('¡Todo salió según lo planeado!');
+			}	
+			// Nos retorna el el arreglo de "links", con todos los links dentro
+			// console.log(chalk.magenta(links))		
+			resolve(links);			
 		})
 	})
 }
