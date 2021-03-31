@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 //Obtener el contenido de los archivos .md
 const readContentMD = (archive) => {
 	let readArchive = fs.readFileSync(archive, 'utf-8');
-	console.log(chalk.magenta(readArchive));
+	// console.log(chalk.magenta(readArchive));
 	// 2. Mandamos llamar la función de "getLinks"
 	getLinks(archive)
 		//Definimos una promesa, donde si obtenemos el arreglo de links entonces:
@@ -18,13 +18,35 @@ const readContentMD = (archive) => {
 		})
 		//Mostramos en consola el resultado general de la ejecuación de cada una de las promesas
 		//Esto nos muestra el número total de links en cada archivo .md
-		.then(result => console.log('Total de links encontrados en el archivo', result, result.length)) // [200, 200, 200, ...]
-		// .then()
+		// .then(result => console.log('Total de links encontrados en el archivo', result, result.length)) // [200, 200, 200, ...]		
 		
-		// .catch((error) => {
-		// 	console.log(chalk.red(error))
-		// })
-		
+		.then((result) => {
+
+			let counterOk = [];
+			let counterFail = [];
+
+			result.forEach((link) => {
+				if(link.status == 200){
+					counterOk.push(link.status)
+				}else if(link.status != 200){
+					counterFail.push(link.status)
+				}
+			})
+
+			let totalLinks = counterOk.length + counterFail.length;
+			console.log('Total de links', (totalLinks), 'Links Ok', (counterOk.length), 'Links rotos', (counterFail.length))
+			// console.log(result)
+			// console.log(chalk.magenta(counterOk), chalk.yellow(counterOk.length), chalk.red(counterFail), chalk.cyan(counterFail.length))
+			return(counterOk, counterFail)
+			// result.forEach((link) => {		
+			// 	if(link.status != 200){
+			// 		counterOk.push(link.status)
+			// 	}
+			// })
+			// console.log(counterOk)
+			// return(counterOk)
+		})		
+		.catch((error) => console.log(chalk.red(error)))		
 }
 
 //Ingresar a los archivos y obtener su contenido
@@ -47,41 +69,41 @@ const extensionArchive = (archive) => {
 	const extNamePath = path.extname(archive);
 
 	if (extNamePath == '.md') {
-		console.log(chalk.yellow('Soy un archivo con extensión .md'));
+		// console.log(chalk.yellow('Soy un archivo con extensión .md'));
 		readContentMD(archive);
 
 	} else if (extNamePath == '') {
-		console.log(chalk.cyan('Soy una carpeta'));
+		// console.log(chalk.cyan('Soy una carpeta'));
 		contentArchive(archive);		
 	}
 }
 
+// Definir el color, según el estatus
+// const colorStatus = (response) => {
+// 	if(response.ok){
+// 		console.log(chalk.cyan(response.status))
+// 	}else{
+// 		console.log(chalk.red(error.status))
+// 	}
+// 	console.log(colorStatus)
+// 	return(response)
+// }
+
 // Verificar el estatus de los Links
 const getStatus = (link) => {
-	//Aquí utilizamos retun, porque queremos que nos devuelva el link	
+	//Aquí utilizamos retun, porque queremos que nos devuelva el link
 	return fetch(link)	
-	
-	.then((response) => {
-		
-		if(response.ok){			
+
+	.then((response) => {				
 			// console.log(chalk.cyan(response.status, response.url))
-			return(response.status)
-		}else{			
-			// console.log(chalk.red(response.status, response.url))
-			return(response.status)
-		}
-
-		// console.log(chalk.cyanBright(response.status, response.url))
-		// console.log(response.status)
-		// return(response.status)
-		
+			return response.ok ? {status:response.status, text:"OK", url:link} : {status:response.status, text:"FAIL", url:link}		
 	})
-	.catch((error) => {
-		// console.log(chalk.red('Status error', error))
-		return ('Error 500 del servidor', error.status)		
+	.catch((error) => {	
+			// console.log(chalk.red(error.status))
+			return {status: 500, text: 'FAIL', url:link}		
 	})	
-}
 
+}
 
 
 //Depurar Links
@@ -123,7 +145,7 @@ const getLinks = (archive) => {
 						if(urlMatch){
 							urlMatch.forEach(link => {
 								const finalLink = depurateLinks(link) 
-								console.log(chalk.green(finalLink))
+								// console.log(chalk.green(finalLink))
 								//Estamos empujando al arreglo "links" cada Link ya depurado
 								links.push(finalLink)
 								//getStatus(finalLink)								
