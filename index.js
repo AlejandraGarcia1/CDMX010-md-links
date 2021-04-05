@@ -3,6 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
+// console.log(process.argv)
+//Argumentos de la línea de comando
+process.argv.forEach((val, index) => {
+	console.log(`${index}: ${val}`)
+	
+})
+
 //Obtener el contenido de los archivos .md
 const readContentMD = (archive) => {
 	let readArchive = fs.readFileSync(archive, 'utf-8');
@@ -19,8 +26,9 @@ const readContentMD = (archive) => {
 		//Mostramos en consola el resultado general de la ejecuación de cada una de las promesas
 		//Esto nos muestra el número total de links en cada archivo .md
 		// .then(result => console.log('Total de links encontrados en el archivo', result, result.length)) // [200, 200, 200, ...]		
-		
 		.then((result) => {
+			
+			archivePath(archive)
 
 			let counterOk = [];
 			let counterFail = [];
@@ -32,19 +40,11 @@ const readContentMD = (archive) => {
 					counterFail.push(link.status)
 				}
 			})
-
 			let totalLinks = counterOk.length + counterFail.length;
 			console.log('Total de links', (totalLinks), 'Links Ok', (counterOk.length), 'Links rotos', (counterFail.length))
 			// console.log(result)
 			// console.log(chalk.magenta(counterOk), chalk.yellow(counterOk.length), chalk.red(counterFail), chalk.cyan(counterFail.length))
-			return(counterOk, counterFail)
-			// result.forEach((link) => {		
-			// 	if(link.status != 200){
-			// 		counterOk.push(link.status)
-			// 	}
-			// })
-			// console.log(counterOk)
-			// return(counterOk)
+			return(counterOk, counterFail)		
 		})		
 		.catch((error) => console.log(chalk.red(error)))		
 }
@@ -64,7 +64,8 @@ const contentArchive = (archive) => {
 	})	
 }
 
-//Obteniendo la extensión (archivos o carpetas)
+
+// Obteniendo la extensión (archivos o carpetas)
 const extensionArchive = (archive) => {
 	const extNamePath = path.extname(archive);
 
@@ -74,20 +75,21 @@ const extensionArchive = (archive) => {
 
 	} else if (extNamePath == '') {
 		// console.log(chalk.cyan('Soy una carpeta'));
+		archivePath(archive)
 		contentArchive(archive);		
 	}
 }
 
-// Definir el color, según el estatus
-// const colorStatus = (response) => {
-// 	if(response.ok){
-// 		console.log(chalk.cyan(response.status))
-// 	}else{
-// 		console.log(chalk.red(error.status))
-// 	}
-// 	console.log(colorStatus)
-// 	return(response)
-// }
+//Mostrar en consola el Path del archivo
+const archivePath = (archive) => {
+	const extensionPath = path.extname(archive)
+
+	if(extensionPath == '.md'){
+		console.log(chalk.magentaBright('Accediendo a los Links de los archivos:', archive))
+	}else if(extensionPath == ''){
+		// console.log(chalk.gray('Accediendo a los archivos dentro del directorio:', archive))
+	}
+}
 
 // Verificar el estatus de los Links
 const getStatus = (link) => {
@@ -101,8 +103,7 @@ const getStatus = (link) => {
 	.catch((error) => {	
 			// console.log(chalk.red(error.status))
 			return {status: 500, text: 'FAIL', url:link}		
-	})	
-
+	})
 }
 
 
