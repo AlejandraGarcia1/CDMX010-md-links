@@ -1,19 +1,13 @@
+#!/usr/bin/env node
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
+const process = require('process');
 
-// console.log(process.argv)
-//Argumentos de la línea de comando
-process.argv.forEach((val, index) => {
-	console.log(`${index}: ${val}`)
-	
-})
 
-//Obtener el contenido de los archivos .md
+// De acuerdo al contenido que obtuvimos, vamos a ejecutar todas las promesas anteriores
 const readContentMD = (archive) => {
-	let readArchive = fs.readFileSync(archive, 'utf-8');
-	// console.log(chalk.magenta(readArchive));
 	// 2. Mandamos llamar la función de "getLinks"
 	getLinks(archive)
 		//Definimos una promesa, donde si obtenemos el arreglo de links entonces:
@@ -27,7 +21,7 @@ const readContentMD = (archive) => {
 		//Esto nos muestra el número total de links en cada archivo .md
 		// .then(result => console.log('Total de links encontrados en el archivo', result, result.length)) // [200, 200, 200, ...]		
 		.then((result) => {
-			
+
 			archivePath(archive)
 
 			let counterOk = [];
@@ -49,7 +43,9 @@ const readContentMD = (archive) => {
 		.catch((error) => console.log(chalk.red(error)))		
 }
 
-//Ingresar a los archivos y obtener su contenido
+
+
+// Ingresar a los archivos y obtener su contenido
 const contentArchive = (archive) => {
 	fs.readdir(archive, (err, files) => {
 		if(err){
@@ -63,6 +59,7 @@ const contentArchive = (archive) => {
 		}
 	})	
 }
+
 
 
 // Obteniendo la extensión (archivos o carpetas)
@@ -80,6 +77,8 @@ const extensionArchive = (archive) => {
 	}
 }
 
+
+
 //Mostrar en consola el Path del archivo
 const archivePath = (archive) => {
 	const extensionPath = path.extname(archive)
@@ -90,6 +89,8 @@ const archivePath = (archive) => {
 		// console.log(chalk.gray('Accediendo a los archivos dentro del directorio:', archive))
 	}
 }
+
+
 
 // Verificar el estatus de los Links
 const getStatus = (link) => {
@@ -107,7 +108,8 @@ const getStatus = (link) => {
 }
 
 
-//Depurar Links
+
+// Depurar Links
 const depurateLinks = (link) => {
 	const deleteItem = link.indexOf(')');
 	let finalLinks = "";
@@ -121,8 +123,9 @@ const depurateLinks = (link) => {
 
 
 
-//Obteniendo los links de los archivos
+// //Obteniendo el contenido de los archivos .md y sus links
 const getLinks = (archive) => {
+	// console.log('getlinks archive', archive)
 	return new Promise((resolve, reject) => {
 		//1. Definimos el arreglo en donde entrará cada Link validado
 		const links = []
@@ -155,6 +158,8 @@ const getLinks = (archive) => {
 					}
 				})
 			}	
+
+			
 			// Nos retorna el el arreglo de "links", con todos los links dentro
 			// console.log(chalk.magenta(links))		
 			resolve(links);			
@@ -162,7 +167,42 @@ const getLinks = (archive) => {
 	})
 }
 
+//Definir CLI
+// const process = require('process');
 
+const argPath = process.argv[2];
+const validate1 = process.argv[3];
+const validate2 = process.argv[4];
+let cli = {}
+
+if(validate1 == '--validate' || validate2 == '--validate' ){
+	cli.validate = '--validate'	
+} if(validate2 == '--stats' || validate1 == '--stats'){
+	cli.stats = '--stats'
+} 
+
+console.log(argPath)
+console.log(cli)
+
+const mdLinks = (argPath, cli) => {
+	if(cli.validate == '--validate'){
+		
+		// extensionArchive()
+		// contentArchive()
+		// getLinks()
+		// depurateLinks()	
+		return getStatus()
+		.then(value => console.log('Hola',value))		
+		// console.log(getStatus())
+	}
+
+	
+	
+	console.log('Si funciono', argPath)
+	// return('Hola', getStatus())
+
+}
+mdLinks(argPath, cli)
 
 
 
