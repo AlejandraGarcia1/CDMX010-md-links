@@ -13,6 +13,12 @@ const linksMock = [
 	"https://nodejs.org/api/http.html#http_http_get_options_callback",
 	"https://www.youtube.com/watch?v=lPPgY3HLlhQ"
 ]
+
+const undeporedLinks = [
+	"(https://jestjs.io/)",
+	"(https://nodejs.org/api/http.html#http_http_get_options_callback)",
+	"(https://www.youtube.com/watch?v=lPPgY3HLlhQ)"
+]
 // describe('Suit de test unitario',()=>{
 //     test('recibir mensaje',()=>{
 //         expect(print('holi')).toBe('Estoy recibiendo holi')
@@ -31,9 +37,26 @@ const linksMock = [
 // 	// })
 // })
 
-test('Obtengo los links depurados de un texto', () => {
-  return expect(functions.getLinks(textMock)).resolves.toStrictEqual(linksMock);
-});
+// test('Obtengo los links depurados de un texto', () => {
+//   return expect(functions.getLinks(textMock)).expect.arrayContaining(linksMock);
+// });
+
+it('Espero que me devuelva el link depurado', () => {
+	expect(functions.depurateLinks(undeporedLinks))
+	.toEqual(expect.arrayContaining(linksMock))
+})
+
+// --- CASI BIEN
+// test('Obtengo los links depurados de un texto', () => {
+//   return functions.getLinks(textMock).then(data => {
+//     expect(data).toEqual(linksMock);
+//   });
+// });
+
+// EJEMPLO DE LAU -----------------------
+// test('Obtengo los links depurados de un texto', () => {
+//   return expect(functions.getLinks(textMock)).resolves.toStrictEqual(linksMock);
+// });
 
 
 
