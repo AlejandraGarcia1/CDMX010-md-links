@@ -154,13 +154,20 @@ const readContentMD = (archive) => {
 					// return chalk.blue(result.url, result.text, result.status)
 				}	
 			})
-		}
+		};
+			
+		// stats(archive)
+		
 
-		stats(archive)
+		
+	
+		// allStats(archive)
+		// allStats(archive)
 
 
 		// Contador ------------------------
-		// if(process.argv.includes('--stats' && '--validate')){  **************************************** STATS Y VALIDATE
+		// if(process.argv.includes('--stats' && '--validate')){ 
+	
 
 		// let counterOk = [];
 		// let counterFail = [];
@@ -175,10 +182,14 @@ const readContentMD = (archive) => {
 
 		// })
 		// // // archivePath(archive)
-
+		
 		
 		// console.log(chalk.green('El total de links OK: ', counterOk.length))
 		// console.log(chalk.red('El total de links FAIL: ', counterFail.length))
+		// stats(archive)
+	
+
+		stats(archive)
 
 		// // stats(archive)
 
@@ -221,10 +232,17 @@ const stats = (archive) => {
 			let totalLinks = links.length
 			console.log(chalk.yellow('El total de links es: ', totalLinks))
 
+			allStats(archive)
+
 			let uniqueLinks = [...new Set(links)].length
 			console.log(chalk.blue('Los links unicos son: ', uniqueLinks))
+
+			// allStats(archive)
+
+			
 	})
-	}
+}	
+	
 }
 
 // stats()	
@@ -233,26 +251,42 @@ const stats = (archive) => {
 // 8. Stats para stats y validate
 const allStats = (archive) => {
 
-	getLinks(archive)
+	getLinks(archive)	
+	
 	.then((links) => {
+		// console.log(chalk.red(links))
+		const promises = links.map(getStatus)
+		// console.log(Promise.all(promises))
+		// let promis = Promise.all(promises)
+		// console.log(getLinks(promis))		
+		return Promise.all(promises)
+	})
+	.then((result) => {
 
+		if(process.argv.includes('--stats')){
+		
 		let counterOk = [];
 		let counterFail = [];
 
-		links.forEach((link) => {
+		result.forEach((link) => {
 
-		if(link.status == 200){				
-			counterOk.push(link.status)
-		}else if(link.status != 200){
-			counterFail.push(link.status)
-		}
+			if(link.status == 200){				
+				counterOk.push(link.status)
+			}else if(link.status != 200){
+				counterFail.push(link.status)
+			}
 
+		})
+		// // archivePath(archive)
+
+		
 		console.log(chalk.green('El total de links OK: ', counterOk.length))
 		console.log(chalk.red('El total de links FAIL: ', counterFail.length))
 
+		}
 	})
 
-	})
+
 
 }
 
