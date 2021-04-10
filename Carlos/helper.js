@@ -1,5 +1,6 @@
-const print =(message)=>`Estoy recibiendo ${message}`
+const print = (message) =>`Estoy recibiendo ${message}`
 
 module.exports={
     print
 }
+
