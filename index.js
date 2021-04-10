@@ -135,30 +135,58 @@ const readContentMD = (archive) => {
 		return Promise.all(promises)
 	})
 	.then((result) => {
+
+		let counterOk = [];
+		let counterFail = [];
+
+		result.forEach((link) => {
+
+			if(link.status == 200){				
+				counterOk.push(link.status)
+			}else if(link.status != 200){
+				counterFail.push(link.status)
+			}
+
+		})
+		archivePath(archive)
+		console.log(chalk.green('El total de links OK: ', counterOk.length))
+		console.log(chalk.red('El total de links FAIL: ', counterFail.length))
 		// console.log(result)	
 		stats(archive)	
 	})
 }
 
+// 6.1 Mostrar el Path de donde se esta obteniendo la información
+const archivePath = (archive) => {
+	// Se obtiene la extensión del Path
+	const extensionPath = path.extname(archive)
+
+	if(extensionPath === '.md'){
+		console.log('Accediendo a los archivos de: ', archive)
+	}else if(extensionPath === ''){
+		console.log('Accediendo al directorio: ', archive)
+	}
+
+}
+
 // 7. Estadísticas
 const stats = (archive) => {
+	
+	if(process.argv.includes('--stats')){
 
-	let allLinks = getLinks(archive)
+	getLinks(archive)
 
 	.then((links) => {
+		
+		// archivePath(archive)
+
 		let totalLinks = links.length
-		console.log(chalk.green('El total de links es: ', totalLinks))
+		console.log(chalk.yellow('El total de links es: ', totalLinks))
 
 		let uniqueLinks = [...new Set(links)].length
 		console.log(chalk.blue('Los links unicos son: ', uniqueLinks))
 	})
-	
-
-	// .then((links) => {
-	// 	let uniqueLinks = [...new Set(links)].length
-	// 	console.log('Los links unicos son: ', uniqueLinks)
-	// })
-	console.log(allLinks)
+	}
 }
 
 // 1.1 Definir en donde se ejecuta la primera función 
