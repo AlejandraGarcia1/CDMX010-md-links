@@ -142,7 +142,7 @@ const readContentMD = (archive) => {
 		// Obtenemos un arreglo, con distintos objetos que son cada resultado.
 		// console.log(result)
 		
-		if(process.argv.includes('--validate')){
+		if(process.argv.includes('--validate')){ 
 
 			result.forEach((result) => {
 
@@ -152,26 +152,15 @@ const readContentMD = (archive) => {
 				}else if(result.status != 200){
 					console.log(chalk.gray(result.url), chalk.red(result.text), chalk.red('-'), chalk.red(result.status))
 					// return chalk.blue(result.url, result.text, result.status)
-				}
-	
+				}	
 			})
-
 		}
 
-	
-		
+		stats(archive)
 
-		// Operador ternario
-		// if(process.argv.includes('--validate')){
-		// 	if(result.status == 200){
-		// 		console.log(chalk.green({status:result.status, text:"OK", url:link}))
-		// 	}else if(result.status != 200){
-		// 		console.log(chalk.red({status:result.status, text:"FAIL", url:link}))
-		// 	}
-
-		// }	
 
 		// Contador ------------------------
+		// if(process.argv.includes('--stats' && '--validate')){  **************************************** STATS Y VALIDATE
 
 		// let counterOk = [];
 		// let counterFail = [];
@@ -185,13 +174,24 @@ const readContentMD = (archive) => {
 		// 	}
 
 		// })
-		// archivePath(archive)
+		// // // archivePath(archive)
+
+		
 		// console.log(chalk.green('El total de links OK: ', counterOk.length))
 		// console.log(chalk.red('El total de links FAIL: ', counterFail.length))
+
+		// // stats(archive)
+
+		// }
+		// ***********************+ aqui se ejecutan los links y stats
+		// stats(archive) 
+
 		// console.log(result)	
 		// stats(archive)	
 	})
+	// stats(archive) 
 }
+
 
 // 6.1 Mostrar el Path de donde se esta obteniendo la información
 const archivePath = (archive) => {
@@ -209,24 +209,54 @@ const archivePath = (archive) => {
 // 7. Estadísticas
 const stats = (archive) => {
 	
-	if(process.argv.includes('--stats')){
-		console.log(process.argv)
+	if(process.argv.includes('--stats')){ 
+	
+		// console.log(process.argv)
+		getLinks(archive)
+
+		.then((links) => {
+		
+			// archivePath(archive)
+
+			let totalLinks = links.length
+			console.log(chalk.yellow('El total de links es: ', totalLinks))
+
+			let uniqueLinks = [...new Set(links)].length
+			console.log(chalk.blue('Los links unicos son: ', uniqueLinks))
+	})
+	}
+}
+
+// stats()	
+
+
+// 8. Stats para stats y validate
+const allStats = (archive) => {
 
 	getLinks(archive)
-
 	.then((links) => {
-		
-		// archivePath(archive)
 
-		let totalLinks = links.length
-		console.log(chalk.yellow('El total de links es: ', totalLinks))
+		let counterOk = [];
+		let counterFail = [];
 
-		let uniqueLinks = [...new Set(links)].length
-		console.log(chalk.blue('Los links unicos son: ', uniqueLinks))
+		links.forEach((link) => {
+
+		if(link.status == 200){				
+			counterOk.push(link.status)
+		}else if(link.status != 200){
+			counterFail.push(link.status)
+		}
+
+		console.log(chalk.green('El total de links OK: ', counterOk.length))
+		console.log(chalk.red('El total de links FAIL: ', counterFail.length))
+
 	})
-	}		
+
+	})
+
 }
-stats()	
+
+
 
 // 1.1 Definir en donde se ejecuta la primera función 
 extensionArchive('./files')
