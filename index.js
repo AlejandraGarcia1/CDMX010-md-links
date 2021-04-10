@@ -109,7 +109,8 @@ const getLinks = (archive) => {
 }
 
 // 5. Verificar el estatus de los links
-const getStatus = (link) => {
+const getStatus = (link) => {	
+		
 	// "fetch" acceder y manipular partes del canal HTTP, tales como peticiones y respuestas (Es una promesa)
 	return fetch(link)
 
@@ -121,7 +122,7 @@ const getStatus = (link) => {
 		// Nos devuelve un objeto por cada link, pero yo le defino unas propiedades en específico para que coincidan con el .catch			
 		return {status: 500, text: 'FAIL', url:link}	
 	})
-
+	
 }
 
 // 6. Ejecutamos las promesas
@@ -152,7 +153,7 @@ const readContentMD = (archive) => {
 		console.log(chalk.green('El total de links OK: ', counterOk.length))
 		console.log(chalk.red('El total de links FAIL: ', counterFail.length))
 		// console.log(result)	
-		stats(archive)	
+		// stats(archive)	
 	})
 }
 
@@ -173,6 +174,7 @@ const archivePath = (archive) => {
 const stats = (archive) => {
 	
 	if(process.argv.includes('--stats')){
+		console.log(process.argv)
 
 	getLinks(archive)
 
@@ -186,8 +188,20 @@ const stats = (archive) => {
 		let uniqueLinks = [...new Set(links)].length
 		console.log(chalk.blue('Los links unicos son: ', uniqueLinks))
 	})
-	}
+	}		
 }
+stats()	
 
 // 1.1 Definir en donde se ejecuta la primera función 
 extensionArchive('./files')
+
+module.exports = {
+	'extensionArchive' : extensionArchive,
+	'contentArchive' : contentArchive,
+	'depurateLinks' : depurateLinks,
+	'getLinks' : getLinks,
+	'getStatus' : getStatus,
+	'readContentMD' : readContentMD,
+	'archivePath' : archivePath,
+	'stats' : stats
+}
