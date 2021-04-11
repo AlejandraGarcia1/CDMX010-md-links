@@ -1,74 +1,38 @@
-
 const functions = require('../index');
 
-const textMock = `Los tests unitarios deben cubrir un mínimo del 70% de _statements_, functions_,
-	_lines_ y _branches_. Te recomendamos explorar [Jest](https://jestjs.io/)
-  para tus pruebas unitarias.
+const textMock = `[Markdown](https://es.wikipedia.org/wiki/Markdown) es un lenguaje de marcado
+ligero muy popular entre developers. Es usado en muchísimas plataformas que
+manejan texto plano (GitHub, foros, blogs, ...), y es muy común
+encontrar varios archivos en ese formato en cualquier tipo de repositorio
+(empezando por el tradicional README.md).
 
-	[ ] Verbos HTTP ([http.get](https://nodejs.org/api/http.html#http_http_get_options_callback))
-  Fundamentos de programación.
-  [ ] [Recursión.](https://www.youtube.com/watch?v=lPPgY3HLlhQ)`
+Estos archivos Markdown normalmente contienen _links_ (vínculos/ligas) que
+muchas veces están rotos o ya no son válidos y eso perjudica mucho el valor de
+la información que se quiere compartir.
+
+Dentro de una comunidad de código abierto, nos han propuesto crear una
+herramienta usando [Node.js](https://nodejs.org/), que lea y analice archivos
+en formato Markdown, para verificar los links que contengan y reportar
+algunas estadísticas.
+
+![md-links](https://user-images.githubusercontent.com/110297/42118443-b7a5f1f0-7bc8-11e8-96ad-9cc5593715a6.jpg)`
 
 const linksMock = [
-	"https://jestjs.io/",
-	"https://nodejs.org/api/http.html#http_http_get_options_callback",
-	"https://www.youtube.com/watch?v=lPPgY3HLlhQ"
+	'https://jestjs.io/',
+	'https://nodejs.org/api/http.html#http_http_get_options_callback',
+	'https://www.youtube.com/watch?v=lPPgY3HLlhQ'
 ]
 
-const undeporedLinks = [
-	"(https://jestjs.io/)",
-	"(https://nodejs.org/api/http.html#http_http_get_options_callback)",
-	"(https://www.youtube.com/watch?v=lPPgY3HLlhQ)"
-]
+const links = "https://jestjs.io/)"
+ "https://nodejs.org/api/http.html#http_http_get_options_callback)"
+ "https://www.youtube.com/watch?v=lPPgY3HLlhQ)"
 
-const mockStatus200 = [
-  { status: 200, text: 'OK', url: 'https://nodejs.org/api/path.html' },
-  {
-    status: 200,
-    text: 'OK',
-    url: 'https://medium.com/netscape/a-guide-to-create-a-nodejs-command-line-package-c2166ad0452e'
-  }
-]
+const linksDepurate = "https://jestjs.io/"
+ "https://nodejs.org/api/http.html#http_http_get_options_callback"
+  "https://www.youtube.com/watch?v=lPPgY3HLlhQ"
 
-// describe('Le ingreso un arreglo con links sin depurar, por lo que espero que los devuelva depurados', () => {
-// 	ValidityState(getLinks)
-// 	.then((data) => {
-// 		expect(data).toEqual(expect.arrayContaining(['https://developer.mozilla.org/es/docs/Referencia_DOM_de_Gecko/Introducci%C3%B3n']))
-// 	})
-// 	// it('Espero que me devuelva el link depurado', () => {
-// 	// 	expect(getLinks(['https://developer.mozilla.org/es/docs/Referencia_DOM_de_Gecko/Introducci%C3%B3n)']))
-// 	// 	.toEqual(expect.arrayContaining(['https://developer.mozilla.org/es/docs/Referencia_DOM_de_Gecko/Introducci%C3%B3n']))
-// 	// })
-// })
 
-// test('Obtengo los links depurados de un texto', () => {
-//   return expect(functions.getLinks(textMock)).expect.arrayContaining(linksMock);
-// });
-
-// it('Espero que me devuelva el link depurado', () => {
-// 	expect(functions.depurateLinks(undeporedLinks))
-// 	.toEqual(expect.arrayContaining(linksMock))
-// })
-
-// --- CASI BIEN
-// test('Obtengo los links depurados de un texto', () => {
-//   return functions.getLinks(textMock).then(data => {
-//     expect(data).toEqual(linksMock);
-//   });
-// });
-
-// EJEMPLO DE LAU -----------------------
-// test('Obtengo los links depurados de un texto', () => {
-//   return expect(functions.getLinks(textMock)).resolves.toStrictEqual(linksMock);
-// });
-
-// DICE QUE MANDO UN OBJETO VACÍO
-// it('Espero que regrese los links limpios', () => {
-// 	expect(functions.getLinks(['https://nodejs.org/api/http.html#http_http_get_options_callback)']))
-// 	.toEqual(expect.objectContaining(['https://nodejs.org/api/http.html#http_http_get_options_callback']))
-// })
-describe('Probando la función getStatus', () =>{
-
+describe('Probando la función getStatus', () => {
 	it('Debe ser una función', () => {
 		expect(typeof functions.getStatus).toBe('function')
 	});
@@ -87,36 +51,31 @@ describe('Probando la función getStatus', () =>{
 
 });
 
+describe('Probando la función de depurateLinks', () => {
+	it('Debe ser una función', () => {
+		expect(typeof functions.depurateLinks).toBe('function')
+	});
 
+	it('Espero que me devuelva el link depurado', () => {
+		expect(functions.depurateLinks('https://nodejs.org/api/path.html)'))
+		.toEqual(expect.stringContaining('https://nodejs.org/api/path.html'))
+	});
 
+	it('Debe devolverme una lista de links depurados', () => {
+		expect(functions.depurateLinks(links))
+		.toEqual(expect.stringContaining(linksDepurate))
+	});
 
+});
 
+describe('Probando la función getLinks', () => {
+	it('Debe ser una función', () => {
+		expect(typeof functions.getLinks).toBe('function')
+	});
 
-//MISMO ERROR DE ABAJO
-// it('Espero que me devuelva el link depurado', () => {
-// 	return functions.depurateLinks('https://nodejs.org/api/path.html)').then(value => {
-// 		expect(value).toEqual(expect.objectContaining(['https://nodejs.org/api/path.html']))
-// 	})
-// })
-
-// // DICE QUE .THEN NO ES UNA FUNCIÓN, PERO ESTOY SIGUIENDO EL EJEMPLO DE LA DOCUMENTACIÓN (ES EL COMENTADO ABAJO)
-// 	test('Depurar links', () => {
-// 		return functions.depurateLinks('https://nodejs.org/api/path.html)').then(data => {
-// 			expect(data).toStrictEqual('https://nodejs.org/api/path.html')
-// 		})
-// 	})
-
-// it('Espero que ')
-
-
-
-// test('the data is peanut butter', () => {
-//   return fetchData().then(data => {
-//     expect(data).toBe('peanut butter');
-//   });
-// });
-
-
-
-// depurate links 
-// getLinks
+	// ESTE TEST ME MARCA ERROR
+	it('Debe poder leer el texto y debolverme los links encontrados', () => {
+		expect(functions.getLinks(textMock))
+		.toEqual(expect.arrayContaining(linksMock))
+	})
+});

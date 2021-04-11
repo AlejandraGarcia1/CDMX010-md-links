@@ -74,7 +74,7 @@ const getLinks = (archive) => {
 						}						
 					}					
 				}) 
-			}				
+			}						
 			resolve(links);
 		})
 	})
