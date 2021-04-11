@@ -113,8 +113,6 @@ const readContentMD = (archive) => {
 				}	
 			})
 		}
-		// ELSEEEEEEEEEEEEEEE PARA EL PURO PATH
-
 		stats(archive)
 	})	
 };
@@ -142,8 +140,7 @@ const stats = (archive) => {
 			return Promise.all(promises);
 
 		})
-		.then((result) => {	
-				
+		.then((result) => {			
 			let counterOk = [];
 			let counterFail = [];
 	
@@ -157,7 +154,7 @@ const stats = (archive) => {
 			})
 
 			archivePath(archive)	
-			
+
 			let totalLinks = result.length
 			console.log(chalk.yellow('El total de links es: ', totalLinks));
 			let uniqueLinks = [...new Set(result)].length
