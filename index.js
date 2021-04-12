@@ -70,6 +70,39 @@ const getStatus = (link) => fetch(link)
   .then((response) => (response.ok ? { status: response.status, text: 'OK', url: link } : { status: response.status, text: 'FAIL', url: link }))
   .catch(() => ({ status: 500, text: 'FAIL', url: link }));
 
+// 8. Estadísticas globales
+const globalStats = (archive) => {
+  if (process.argv.includes('--globalstats')) {
+    getLinks(archive)
+
+      .then((links) => {
+        const promises = links.map(getStatus);
+        return Promise.all(promises);
+      })
+      .then((result) => {
+        const counterOk = [];
+        const counterFail = [];
+
+        result.forEach((link) => {
+          if (link.status === 200) {
+            counterOk.push(link.status);
+          } else if (link.status !== 200) {
+            counterFail.push(link.status);
+          }
+        });
+
+        archivePath(archive);
+
+        const totalLinks = result.length;
+        console.log(chalk.gray('El'), chalk.yellow('TOTAL'), chalk.gray('de links es: '), chalk.yellow(totalLinks));
+        const uniqueLinks = [...new Set(result)].length;
+        console.log(chalk.gray('Los links'), chalk.magenta('UNICOS'), chalk.gray('son: '), chalk.magenta(uniqueLinks));
+        console.log(chalk.gray('El total de links'), chalk.green('INTACTOS'), chalk.gray('son: '), chalk.green(counterOk.length));
+        console.log(chalk.gray('El total de links'), chalk.red('ROTOS'), chalk.gray('son: '), chalk.red(counterFail.length));
+      });
+  }
+};
+
 // 6. Ejecutamos las promesas
 const readContentMD = (archive) => {
   getLinks(archive)
@@ -93,6 +126,7 @@ const readContentMD = (archive) => {
       }
       // eslint-disable-next-line no-use-before-define
       stats(archive);
+      globalStats(archive);
     });
 };
 
@@ -127,31 +161,14 @@ const stats = (archive) => {
   if (process.argv.includes('--stats')) {
     getLinks(archive)
 
-      .then((links) => {
-        const promises = links.map(getStatus);
-        return Promise.all(promises);
-      })
-      .then((result) => {
-        const counterOk = [];
-        const counterFail = [];
-
-        result.forEach((link) => {
-          if (link.status === 200) {
-            counterOk.push(link.status);
-          } else if (link.status !== 200) {
-            counterFail.push(link.status);
-          }
-        });
-
+      .then(((links) => {
         archivePath(archive);
 
-        const totalLinks = result.length;
+        const totalLinks = links.length;
         console.log(chalk.gray('El'), chalk.yellow('TOTAL'), chalk.gray('de links es: '), chalk.yellow(totalLinks));
-        const uniqueLinks = [...new Set(result)].length;
+        const uniqueLinks = [...new Set(links)].length;
         console.log(chalk.gray('Los links'), chalk.magenta('UNICOS'), chalk.gray('son: '), chalk.magenta(uniqueLinks));
-        console.log(chalk.gray('El total de links'), chalk.green('INTACTOS'), chalk.gray('son: '), chalk.green(counterOk.length));
-        console.log(chalk.gray('El total de links'), chalk.red('ROTOS'), chalk.gray('son: '), chalk.red(counterFail.length));
-      });
+      }));
   }
 };
 

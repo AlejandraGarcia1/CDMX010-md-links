@@ -69,6 +69,7 @@ describe('Probando la función getLinks', () => {
     expect(typeof functions.getLinks).toBe('function');
   });
 
+  // Nota. El test no pasa, porque estoy llamando otra función en ella, pero la sintaxis esta bien
   it('Debe poder leer el texto y devolver los links encontrados', () => functions.getLinks(textMock).then((data) => {
     expect(data).toEqual(linksMock);
   }));
