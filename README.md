@@ -1,7 +1,7 @@
 # Markdown Links
 Librería para la validación de links en archivos Markdown.
 
-[Consola con bista general](./images/consola.JPG)
+[](./images/consola.JPG)
 
 ## El Proyecto
 
@@ -17,15 +17,15 @@ Pensando en la comunidad de developers y sus necesidades al momento de trabajar 
 
 ## Proceso
 
-[Proceso](./images/Flujo.JPG)
+[](./images/Flujo.JPG)
 
 ## Usabilidad
 
-[1](./images/proceso1.JPG)
-[2](./images/proceso2.JPG)
-[3](./images/proceso3.JPG)
-[4](./images/proceso4.JPG)
-[5](./images/proceso5.JPG)
+[](./images/proceso1.JPG)
+[](./images/proceso2.JPG)
+[](./images/proceso3.JPG)
+[](./images/proceso4.JPG)
+[](./images/proceso5.JPG)
 
 ## Retrospectiva
 
@@ -35,4 +35,4 @@ Comprendí que la descomposición del código muchas veces es necesario para su 
 
 **¡Si tienes cualquier tipo de feedback o comentario, estaría muy agradecida que me lo hicieras saber!**
 
-agarcia_pacheco@hotmail.com
+**agarcia_pacheco@hotmail.com**
