@@ -1,5 +1,5 @@
 # Markdown Links
-Librería para la validación de links en archivos Markdown.
+Librería para validación de links en archivos Markdown.
 
 ![](./images/consola.JPG)
 
@@ -15,7 +15,7 @@ Se busca crear una librería en Node.js que permita la lectura y análisis de ar
 
 ## Contexto
 
-Pensando en la comunidad de developers y sus necesidades al momento de trabajar un nuevo proyecto, se creó **md-Links** una librería que permite leer el contenido de archivos con extensión '.md', obteniendo y analizando los links que se encuentran en el, obteniendo reportes con estadísticas del análisis.
+Pensando en la comunidad de developers y sus necesidadesde al trabajar en un nuevo proyecto, se creó **md-Links** una librería que permite leer el contenido de archivos con extensión '.md', obteniendo y analizando los links que se encuentran en el, mostrandolé al usuario reportes con estadísticas del análisis.
 
 ## Proceso
 
