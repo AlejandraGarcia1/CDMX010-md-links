@@ -23,13 +23,13 @@ Pensando en la comunidad de developers y sus necesidadesde al trabajar en un nue
 
 ## Usabilidad
 
-![](./images/procesi1.JPG)
+![](./images/proceso01.JPG)
 
 ## Comandos
 
-![](./images/proceso2.Jpg)
-![](./images/proceso3.JPG)
-![](./images/proceso4.JPG)
+![](./images/proceso02.Jpg)
+![](./images/proceso03.JPG)
+![](./images/proceso04.JPG)
 ![](./images/proceso5.JPG)
 
 ## Retrospectiva
